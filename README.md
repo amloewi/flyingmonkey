@@ -11,6 +11,7 @@ making the process long, awkward, and error prone. Drawing on the very successfu
 configuration files ("monkeyfiles") designed specifically for these data transformations.
 
 ## Example:
+```
 OLD_NAME:
 "What is your opinion of the governor's policy?"
 NEW_NAME:
@@ -25,4 +26,5 @@ NEW_VALUES:
 "strong"
 "somewhat"
 "oppose"
-- - - - - 
+- - - - -
+```
