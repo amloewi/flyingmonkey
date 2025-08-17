@@ -12,6 +12,9 @@ configuration files ("monkeyfiles") designed specifically for these data transfo
 
 ## Example:
 ```
+write_monkeyfile(data, "specs") # => A preliminary specs.txt file to be edited manually, populated with the data fields
+
+# Finalized specs.txt:
 OLD_NAME:
 "What is your opinion of the governor's policy?"
 NEW_NAME:
