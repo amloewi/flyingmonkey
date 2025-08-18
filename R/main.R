@@ -173,7 +173,7 @@ read_monkeyfile <- function(df_original, filepath) {
     return(df)
 }
 
-#' Plot all Variables in a Data Frame
+#' Plot all Variables in a data.frame
 #'
 #' Makes plots for all variables in a data.frame, each formatted as appropriate
 #' Plots numeric variables as histograms, and factors as barplots of tables.
