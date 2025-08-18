@@ -87,6 +87,6 @@ These are both normalized to make them comparable, and colored in transparent bl
 ```
 sideways_plot(health, received_treatment)
 ```
-![alt text](https://github.com/amloewi/flyingmonkey/blob/main/images/sideways_2.png?raw=true)
+![alt text](https://github.com/amloewi/flyingmonkey/blob/main/images/sideways_2.png)
 
 
