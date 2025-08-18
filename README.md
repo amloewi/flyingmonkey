@@ -79,7 +79,7 @@ For single CATEGORICAL variables, sideways_plot flips the chart sideways so that
 ```
 sideways_plot(health)
 ```
-![alt text](https://github.com/amloewi/flyingmonkey/blob/main/images/sideways_1.jpg?raw=true)
+![alt text](https://github.com/amloewi/flyingmonkey/blob/main/images/sideways_1.png?width=200&height=150)
 
 
 For a categorical variable AND A BOOLEAN variable ('logical' in R), sideways_plot shows two distributions: the values that are, vs the values that are not, indicted by the boolean.
@@ -87,6 +87,6 @@ These are both normalized to make them comparable, and colored in transparent bl
 ```
 sideways_plot(health, received_treatment)
 ```
-![alt text](https://github.com/amloewi/flyingmonkey/blob/main/images/sideways_2.jpg?raw=true)
+![alt text](https://github.com/amloewi/flyingmonkey/blob/main/images/sideways_2.png?width=200&height=150)
 
 
