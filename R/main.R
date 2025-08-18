@@ -240,7 +240,7 @@ plot_dataframe <- function(df, makepdf=F, filename="plot_dataframe") {
 #'
 #' @export
 sideways_plot <- function(x, y=NULL, header="", color="gray") {
-    # old.pars <- par()
+    old.pars <- par(no.readonly = TRUE)
     par(mar=c(3, 12, 2, 2)) # adjust to fit name length?
     if (is.null(y)) {
         barplot(table(x), main=header, las=1, horiz=T, border="white", col=color)
@@ -256,5 +256,5 @@ sideways_plot <- function(x, y=NULL, header="", color="gray") {
                 col=rgb(1, 0, 0, alpha=.3), # red
                 add=T)
     }
-    par(.pardefault)
+    par(old.pars) # .pardefault)
 }
