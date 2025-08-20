@@ -58,7 +58,7 @@ Then when your file is complete, use it to transform your data, and you're ready
 ```
 transformed_data <- read_monkeyfile(original_dataframe, "transformations.txt")
 ```
-In this early form, the biggest issues with flymonkey are with error handling. There should be better warnings and instructions around misformatted monkeyfiles, but it's hard to
+In this early form, the biggest issues with flyingmonkey are with error handling. There should be better warnings and instructions around misformatted monkeyfiles, but it's hard to
 anticipate every possible issue. If something isn't working, check carefully for how your file's format might differ from the documentation.
 
 ### plot_dataframe
