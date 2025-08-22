@@ -46,20 +46,53 @@ write_monkeyfile <- function(df, filename) {
         cat("NEW_NAME:",   file=filename.txt, sep="\n", append=T)
         cat("\n",          file=filename.txt, sep="",   append=T)
         cat("TYPE:",       file=filename.txt, sep="\n", append=T)
-        if (length(unique(df[, column])) > 10) { # what about numeric?
-            cat("character", file=filename.txt, sep="\n", append=T)
-        } else {
-            cat("factor",      file=filename.txt, sep="\n", append=T)
-            cat("OLD_VALUES:", file=filename.txt, sep="\n", append=T)
-            for (x in unique(df[, column])) {
-                cat(x, file=filename.txt, sep="\n", append=T)
-            }
-            cat("NEW_VALUES:", file=filename.txt, sep="\n", append=T)
-            # cat("\n",          file=filename.txt, sep="",   append=T)
+
+        df[, column] <- type.convert(df[, column], as.is=T)
+
+        if (is.numeric(df[, column])) {
+            cat("numeric",       file=filename.txt, sep="\n", append=T)
+            cat("-----",         file=filename.txt, sep="\n", append=T)
+            next
         }
-        cat("-----",       file=filename.txt, sep="\n", append=T)
-        # What a LUDICROUSLY stupid language this can be.
-        # Needed DOUBLE QUOTES; and refused to use sep="\n\n"
+        if (is.character(df[, column])) {
+            nvals <- length(unique(df[, column][df[, column]!=""]))
+            if (nvals == 1) {
+                df[, column] <- df[, column]!=""
+                cat("logical",     file=filename.txt, sep="\n", append=T)
+                cat("-----",       file=filename.txt, sep="\n", append=T)
+                next
+            }
+            if (nvals > 10) {
+                cat("character",   file=filename.txt, sep="\n", append=T)
+                cat("-----",       file=filename.txt, sep="\n", append=T)
+                next
+            }
+            # Could just use else but I think this is clearer
+            if (nvals > 1 && nvals < 10) {
+                cat("ordered",     file=filename.txt, sep="\n", append=T)
+                cat("OLD_VALUES:", file=filename.txt, sep="\n", append=T)
+                for (x in unique(df[, column])) {
+                    cat(x, file=filename.txt, sep="\n", append=T)
+                }
+                cat("NEW_VALUES:", file=filename.txt, sep="\n", append=T)
+                cat("-----",       file=filename.txt, sep="\n", append=T)
+            }
+        }
+
+        # if (length(unique(df[, column])) > 10) { # what about numeric?
+        #     cat("character", file=filename.txt, sep="\n", append=T)
+        # } else {
+        #     cat("factor",      file=filename.txt, sep="\n", append=T)
+        #     cat("OLD_VALUES:", file=filename.txt, sep="\n", append=T)
+        #     for (x in unique(df[, column])) {
+        #         cat(x, file=filename.txt, sep="\n", append=T)
+        #     }
+        #     cat("NEW_VALUES:", file=filename.txt, sep="\n", append=T)
+        #     # cat("\n",          file=filename.txt, sep="",   append=T)
+        # }
+        # cat("-----",       file=filename.txt, sep="\n", append=T)
+        # # What a LUDICROUSLY stupid language this can be.
+        # # Needed DOUBLE QUOTES; and refused to use sep="\n\n"
     }
 }
 
@@ -157,12 +190,15 @@ read_monkeyfile <- function(df_original, filepath) {
         if ('character' %in% slug['type']) {
             df[, slug[['new_name']]] <- as.character(df[, slug[['new_name']]])
         }
+        if ('logical' %in% slug['type']) {
+            df[, slug[['new_name']]] <- as.logical(df[, slug[['new_name']]])
+        }
 
         ## HOW TO HANDLE BLANKS?? What happens if you just ... remove all
         # of them, from the file? If they're still in the data, they'll
         # appear as NA, and still get counted -- just make sure you're
         # prepared to PLOT NA's. otherwise, I think ok.
-        if ('factor' %in% slug[['type']]) {
+        if ('ordered' %in% slug[['type']] || 'factor' %in% slug[['type']]) {
             df[, slug[['new_name']]] <- factor(df[, slug[['new_name']]],
                                                levels=rev(slug[['values']]),
                                                labels=rev(names(slug[['values']])),
@@ -204,7 +240,7 @@ plot_dataframe <- function(df, makepdf=F, filename="plot_dataframe") {
             hist(df[, i], main=names(df)[i], border="white")
         }
         # I had 'character' in here before;
-        if (any(c('factor') %in% class(df[, i]))) { #} | 'factor' %in% class(df[, i])) {
+        if (any(c('factor') %in% class(df[, i])) || 'logical' %in% class(df[, i])) {
             if (length(unique(df[, i])) < 10) {
                 par(mar=c(3, 12, 2, 2)) # adjust to fit name length?
                 barplot(table(df[, i]), main=names(df)[i], las=1, horiz=T,
@@ -241,7 +277,8 @@ plot_dataframe <- function(df, makepdf=F, filename="plot_dataframe") {
 #' @export
 sideways_plot <- function(x, y=NULL, header="", color="gray") {
     old.pars <- par(no.readonly = TRUE)
-    par(mar=c(3, 12, 2, 2)) # adjust to fit name length?
+    spacing <- round(max(nchar(as.character(x)))/2)
+    par(mar=c(3, spacing+3, 2, 2)) # adjust to fit name length? else, 12
     if (is.null(y)) {
         barplot(table(x), main=header, las=1, horiz=T, border="white", col=color)
     } else {
