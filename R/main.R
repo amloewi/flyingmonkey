@@ -191,7 +191,8 @@ read_monkeyfile <- function(df_original, filepath) {
             df[, slug[['new_name']]] <- as.character(df[, slug[['new_name']]])
         }
         if ('logical' %in% slug['type']) {
-            df[, slug[['new_name']]] <- as.logical(df[, slug[['new_name']]])
+            df[, slug[['new_name']]] <- df[, slug[['new_name']]]!=""
+                #as.logical(df[, slug[['new_name']]])
         }
 
         ## HOW TO HANDLE BLANKS?? What happens if you just ... remove all
@@ -200,8 +201,8 @@ read_monkeyfile <- function(df_original, filepath) {
         # prepared to PLOT NA's. otherwise, I think ok.
         if ('ordered' %in% slug[['type']] || 'factor' %in% slug[['type']]) {
             df[, slug[['new_name']]] <- factor(df[, slug[['new_name']]],
-                                               levels=rev(slug[['values']]),
-                                               labels=rev(names(slug[['values']])),
+                                               levels=(slug[['values']]),
+                                               labels=(names(slug[['values']])),
                                                ordered=T)
         }
     }
@@ -242,10 +243,15 @@ plot_dataframe <- function(df, makepdf=F, filename="plot_dataframe") {
         # I had 'character' in here before;
         if (any(c('factor') %in% class(df[, i])) || 'logical' %in% class(df[, i])) {
             if (length(unique(df[, i])) < 10) {
-                par(mar=c(3, 12, 2, 2)) # adjust to fit name length?
-                barplot(table(df[, i]), main=names(df)[i], las=1, horiz=T,
-                        border="white")
+                # par(mar=c(3, 12, 2, 2)) # adjust to fit name length?
+                # barplot(table(df[, i]), main=names(df)[i], las=1, horiz=T,
+                #         border="white")
+                sideways_plot(df[, i], header = names(df)[i])
             }
+        }
+        if ('logical' %in% class(df[, i])) {
+            barplot(table(as.factor(df[, i])), main=names(df)[i], las=1, horiz=T,
+                    border="white")
         } else {
             next
         }
