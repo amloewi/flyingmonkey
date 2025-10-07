@@ -242,16 +242,18 @@ plot_dataframe <- function(df, makepdf=F, filename="plot_dataframe") {
         }
         # I had 'character' in here before;
         if (any(c('factor') %in% class(df[, i])) || 'logical' %in% class(df[, i])) {
+            spacing <- round(max(nchar(as.character(df[, i])))/2)
+            if (is.na(spacing)) spacing <- 2
             if (length(unique(df[, i])) < 10) {
-                # par(mar=c(3, 12, 2, 2)) # adjust to fit name length?
-                # barplot(table(df[, i]), main=names(df)[i], las=1, horiz=T,
-                #         border="white")
-                sideways_plot(df[, i], header = names(df)[i])
+                 par(mar=c(3, spacing+3, 2, 2)) # adjust to fit name length?
+                 barplot(table(df[, i]), main=names(df)[i], las=1, horiz=T,
+                         col="lightblue", border="white")
+                # sideways_plot(df[, i], header = names(df)[i]) # BREAKING; why?
             }
         }
         if ('logical' %in% class(df[, i])) {
             barplot(table(as.factor(df[, i])), main=names(df)[i], las=1, horiz=T,
-                    border="white")
+                    col="lightblue", border="white")
         } else {
             next
         }
@@ -284,6 +286,8 @@ plot_dataframe <- function(df, makepdf=F, filename="plot_dataframe") {
 sideways_plot <- function(x, y=NULL, header="", color="gray") {
     old.pars <- par(no.readonly = TRUE)
     spacing <- round(max(nchar(as.character(x)))/2)
+    if (is.na(spacing)) spacing <- 2
+    # print(spacing)
     par(mar=c(3, spacing+3, 2, 2)) # adjust to fit name length? else, 12
     if (is.null(y)) {
         barplot(table(x), main=header, las=1, horiz=T, border="white", col=color)
